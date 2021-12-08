@@ -3,7 +3,7 @@ package FSM
 import chisel3._
 import chisel3.util._
 
-class MooreFSM extends MultiIOModule {
+class MealyFSM extends MultiIOModule {
 
   //checks seq 10011
   //please pay attention to the bitorder
@@ -37,9 +37,35 @@ class MooreFSM extends MultiIOModule {
         s10011   -> Mux(signal,s1,s10),
     )
 
-    next_state:=MuxLookup(current_state,sinit,state_matrix)
+    next_state:=sinit 
+    //default status
+    //chisel will throw an error without this
+    //since seven status don't full cover 3 bits
 
+    switch(current_state){
+        is(sinit){
+            next_state:=Mux(signal,s1,s0)
+        }
+        is(s0){
+            next_state:=Mux(signal,s1,s0)
+        }
+        is(s1){
+            next_state:=Mux(signal,s1,s10)
+        }
+        is(s10){
+            next_state:=Mux(signal,s1,s100)
+        }
+        is(s100){
+            next_state:=Mux(signal,s1001,s0)
+        }
+        is(s1001){
+            next_state:=Mux(signal,s10011,s10)
+        }
+        is(s10011){
+            next_state:=Mux(signal,s1,s10)
+        }
+    }
 
-    io.out.found:=current_state===s10011
+    io.out.found:=current_state===s1001&&signal
 
 }
