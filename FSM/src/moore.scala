@@ -38,8 +38,7 @@ class MooreFSM extends MultiIOModule {
     )
 
     next_state:=MuxLookup(current_state,sinit,state_matrix)
-
-
+    
     io.out.found:=current_state===s10010
 
 }
