@@ -40,7 +40,7 @@ jobs:
         run: mill FSM.__.test
 
       - name: give me verilog!!!!
-        run: mill FSM.GiveMeVerilog.run
+        run: mill FSM.run
 
       - name: give upload verilog 
         uses: actions/upload-artifact@v2
