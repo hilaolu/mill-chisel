@@ -28,13 +28,13 @@ jobs:
       # Runs a single command using the runners shell
       - name: get zulu
         run: |
-          curl https://fish.phyzait.moe/binary-zulu17 | bash
+          curl https://fish.phyzait.moe/binary-zulu17 | sudo bash
           java --version
 
       # Runs a set of commands using the runners shell
       - name: get mill
         run: |
-          curl https://fish.phyzait.moe/binary-mill | bash
+          curl https://fish.phyzait.moe/binary-mill | sudo bash
       
       - name: test
         run: mill FSM.__.test
