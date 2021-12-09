@@ -38,3 +38,6 @@ jobs:
       
       - name: test
         run: mill FSM.__.test
+
+      - name: give me verilog!!!!
+        run: mill FSM.GiveMeVerilog
