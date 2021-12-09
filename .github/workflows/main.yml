@@ -41,7 +41,7 @@ jobs:
       - name: give me verilog!!!!
         run: mill FSM.run
 
-      - name: give upload verilog 
+      - name: upload verilog 
         uses: actions/upload-artifact@v2
         with:
           name: verilog 
