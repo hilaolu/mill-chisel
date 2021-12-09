@@ -44,6 +44,6 @@ jobs:
       - name: give upload verilog 
         uses: actions/upload-artifact@v2
         with:
-          name: verilog!! 
+          name: verilog 
           path: build/*.v
 
