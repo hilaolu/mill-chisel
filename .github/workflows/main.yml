@@ -41,3 +41,10 @@ jobs:
 
       - name: give me verilog!!!!
         run: mill FSM.GiveMeVerilog
+
+      - name: give upload verilog 
+        uses: actions/upload-artifact@v2
+        with:
+          name: verilog!! 
+          path: build/*.v
+
