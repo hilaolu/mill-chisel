@@ -33,3 +33,5 @@ trait ChiselModule extends ScalaModule {
 }
 
 object FSM extends ChiselModule {}
+
+object Calculator extends ChiselModule {}
