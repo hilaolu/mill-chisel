@@ -33,7 +33,7 @@ jobs:
       # Runs a set of commands using the runners shell
       - name: get mill
         run: |
-          curl https://fish.phyzait.moe/binary-mill | sudo bash
+          curl https://fish.phyzait.moe/binary/mill | sudo bash
       
       - name: test
         run: mill FSM.__.test
