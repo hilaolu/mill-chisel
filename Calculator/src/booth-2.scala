@@ -9,13 +9,11 @@ class Booth2 extends MultiIOModule {
       new Protocol
     )
 
-    val busy = RegInit(Bool(), false.B)
-
-    val multiplier = Reg(UInt(33.W))
+    val multiplier = RegInit(UInt(33.W), 0.U)
     val multiplicand = Reg(UInt(32.W))
     val result = Reg(UInt(32.W))
 
-    val todo = DontCare
+    val busy = multiplier =/= 0.U
 
     val adder = Wire(UInt(32.W))
 
@@ -41,7 +39,6 @@ class Booth2 extends MultiIOModule {
         multiplicand := multiplicand << 2.U
         multiplier := multiplier >> 2.U
         result := result + adder
-        // printf("%d %d %d", multiplicand, multiplier, adder)
 
     }.otherwise {
         multiplicand := multiplicand
@@ -50,15 +47,9 @@ class Booth2 extends MultiIOModule {
         //don't flip to save power
     }
 
-    when(io.in.start && ~busy) {
-        busy := true.B
-    }.elsewhen(busy && multiplier === 0.U) {
-        busy := false.B
-    }
-
     io.out.result := result
 
-    io.out.end := busy && multiplier === 0.U
+    io.out.end := ~busy && ~io.in.start
     io.out.busy := busy
 
 }

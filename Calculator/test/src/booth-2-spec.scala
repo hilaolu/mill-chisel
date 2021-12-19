@@ -35,7 +35,6 @@ class Booth2Test extends FlatSpec with ChiselScalatestTester with Matchers {
             c.reset.poke(false.B)
 
             val INT_MAX = pow(2, 32).toLong - 1
-            // val INT_MAX = 16
 
             val r = scala.util.Random
 
@@ -63,7 +62,6 @@ class Booth2Test extends FlatSpec with ChiselScalatestTester with Matchers {
                 c.io.out.result
                     .expect(random_result.asUInt(32.W))
 
-                c.clock.step()
             }
 
         }
