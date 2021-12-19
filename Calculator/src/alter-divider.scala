@@ -15,7 +15,7 @@ class AlterDivider extends MultiIOModule {
     val busy = RegInit(Bool(), false.B)
     val dividend = Reg(UInt(33.W))
     val divisor = Reg(UInt(63.W))
-    val quotient = Reg(UInt(32.W))
+    val quotient = Reg(UInt(31.W))
 
     val divisor_greater = divisor(62, 32) =/= 0.U
     val dividend_msb = dividend(32, 32)
@@ -47,20 +47,27 @@ class AlterDivider extends MultiIOModule {
             dividend := dividend - divisor(31, 0)
         }
 
-        quotient := Cat(quotient(30, 0), Mux(start, ~dividend_msb, 0.U))
+        quotient := Cat(quotient, Mux(start, ~dividend_msb, 0.U))
 
         divisor := divisor >> 1.U
 
     }
 
+    val count = Reg(UInt(5.W))
+
     when(io.in.start && ~busy) {
         busy := true.B
+        count := 0.U
+    }.elsewhen(busy && count === 31.U) {
+        busy := false.B
+        count := 0.U
     }.otherwise {
         busy := busy
+        count := count + 1.U
     }
 
-    io.out.result := Cat(quotient(30, 0), Mux(start, ~dividend_msb, 0.U))
-    io.out.end := true.B
+    io.out.result := Cat(quotient, Mux(start, ~dividend_msb, 0.U))
+    io.out.end := ~busy
     io.out.busy := busy
 
 }

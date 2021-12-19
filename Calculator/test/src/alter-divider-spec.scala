@@ -27,7 +27,7 @@ class AlterDividerTest
             c.clock.step()
             c.io.in.start.poke(false.B)
             // c.io.out.result.expect(1.U)
-            for (i <- 0 until 32) {
+            while (c.io.out.end.peek().litValue != 1) {
                 c.clock.step()
             }
             c.io.out.result.expect(7.U)
@@ -44,21 +44,18 @@ class AlterDividerTest
             for (i <- 0 until 10000) {
                 val random_op_1 = r.nextLong.abs % (INT_MAX + 1)
                 val random_op_2 =
-                    r.nextLong.abs % (INT_MAX) + 1 //avoid divide 0
+                    r.nextLong.abs % (114514) + 1 //avoid divide 0 or result too small
                 val random_result =
                     (random_op_1 / random_op_2) % (INT_MAX + 1)
                 println(
                   "let's test " + random_op_1 + "/" + random_op_2 + "=" + random_result
                 )
-                c.reset.poke(true.B)
-                c.clock.step()
-                c.reset.poke(false.B)
                 c.io.in.op_1.poke(random_op_1.asUInt(32.W))
                 c.io.in.op_2.poke(random_op_2.asUInt(32.W))
                 c.io.in.start.poke(true.B)
                 c.clock.step()
                 c.io.in.start.poke(false.B)
-                for (i <- 0 until 32) {
+                while (c.io.out.end.peek().litValue != 1) {
                     c.clock.step()
                 }
                 c.io.out.result.expect(random_result.asUInt(32.W))
