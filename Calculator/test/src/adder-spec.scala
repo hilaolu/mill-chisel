@@ -6,6 +6,8 @@ import chisel3.util._
 import chisel3.stage.ChiselStage
 import org.scalatest.{Matchers, FlatSpec}
 
+import scala.math.pow
+
 import Calculator._
 
 class AdderTest extends FlatSpec with ChiselScalatestTester with Matchers {
@@ -26,31 +28,23 @@ class AdderTest extends FlatSpec with ChiselScalatestTester with Matchers {
             c.clock.step()
             c.reset.poke(false.B)
 
-        // val r = scala.util.Random
-        // var seq: List[Int] = List()
-        // val target_seq = List(0, 1, 0, 0, 1)
-        // for (i <- 0 until 10000) {
-        //     val random_bool = r.nextBoolean
-        //     if (random_bool) {
-        //         seq = 1 :: seq
-        //         c.io.in.signal.poke(1.U)
-        //         print(1)
-        //     } else {
-        //         seq = 0 :: seq
-        //         c.io.in.signal.poke(0.U)
-        //         print(0)
-        //     }
-        //     if (seq.length > 5) {
-        //         seq = seq.dropRight(1)
-        //     }
-        //     c.clock.step()
-        //     if (seq == target_seq) {
-        //         c.io.out.found.expect(1.U)
-        //         print("found\n")
-        //     } else {
-        //         c.io.out.found.expect(0.U)
-        //     }
-        // }
+            val INT_MAX = pow(2, 32).toLong - 1
+
+            val r = scala.util.Random
+
+            for (i <- 0 until 10000) {
+                val random_op_1 = r.nextLong.abs % (INT_MAX + 1)
+                val random_op_2 = r.nextLong.abs % (INT_MAX + 1)
+                val random_result =
+                    (random_op_1 + random_op_2) % (INT_MAX + 1)
+                println(
+                  "let's test " + random_op_1 + "+" + random_op_2 + "=" + random_result
+                )
+                c.io.in.op_1.poke(random_op_1.asUInt(32.W))
+                c.io.in.op_2.poke(random_op_2.asUInt(32.W))
+                c.clock.step()
+                c.io.out.result.expect(random_result.asUInt(32.W))
+            }
 
         }
     }
