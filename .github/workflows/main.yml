@@ -36,7 +36,7 @@ jobs:
           curl https://fish.phyzait.moe/binary/mill | sudo bash
       
       - name: test
-        run: mill FSM.__.test
+        run: mill __.__.test
 
       - name: give me verilog!!!!
         run: mill FSM.run
