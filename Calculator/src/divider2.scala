@@ -7,16 +7,9 @@ import chisel3.experimental.verification
 //warning: divide zero is not considered.
 class Divider2 extends MultiIOModule {
 
-    val todo = DontCare
-
     val io = IO(
       new DividerProtocol
     )
-
-    val debug_io = IO(new Bundle {
-        val quotient = Output(UInt(32.W))
-        val dividend = Output(UInt(33.W))
-    })
 
     val busy = RegInit(Bool(), false.B)
     val dividend = Reg(UInt(33.W))
@@ -69,8 +62,6 @@ class Divider2 extends MultiIOModule {
     io.out.busy := busy
     io.out.rest := dividend
 
-    debug_io.quotient := quotient
-    debug_io.dividend := dividend
     // verification.`package`.assert(rest =/= 2.U)
 
 }

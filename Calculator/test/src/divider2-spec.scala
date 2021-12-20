@@ -23,10 +23,8 @@ class Divider2Test extends FlatSpec with ChiselScalatestTester with Matchers {
             c.io.in.start.poke(true.B)
             c.clock.step()
             c.io.in.start.poke(false.B)
-            // c.io.out.result.expect(1.U)
             while (c.io.out.end.peek().litValue != 1) {
                 c.clock.step()
-                println(c.debug_io.dividend.peek())
             }
             c.io.out.result.expect(14.U)
             c.io.out.rest.expect(1.U)

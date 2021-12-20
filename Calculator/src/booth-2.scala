@@ -41,9 +41,9 @@ class Booth2 extends MultiIOModule {
         result := result + adder
 
     }.otherwise {
-        multiplicand := multiplicand
-        multiplier := multiplier
-        result := result
+        multiplicand := DontCare
+        multiplier := DontCare
+        result := DontCare
         //don't flip to save power
     }
 
