@@ -58,12 +58,12 @@ class Calculator extends MultiIOModule {
     )
 
     val lut = Array(
-      "b000.U" -> adder.io.out.result,
-      "b001.U" -> subtracter.io.out.result,
-      "b010.U" -> multiplier.io.out.result,
-      "b011.U" -> divider.io.out.result,
-      "b100.U" -> divider.io.out.rest,
-      "b101.U" -> multiplier.io.out.result
+      "b000".U -> adder.io.out.result,
+      "b001".U -> subtracter.io.out.result,
+      "b010".U -> multiplier.io.out.result,
+      "b011".U -> divider.io.out.result,
+      "b100".U -> divider.io.out.rest,
+      "b101".U -> multiplier.io.out.result
     )
 
     val new_result = MuxLookup(opcode, 0.U, lut)
