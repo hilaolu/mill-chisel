@@ -5,16 +5,6 @@ import chisel3._
 import chisel3.util._
 import chisel3.experimental.verification
 
-class DividerProtocol extends Protocol {
-
-    override val out = new Bundle {
-        val result = Output(UInt(32.W))
-        val end = Output(Bool())
-        val busy = Output(Bool())
-        val rest = Output(UInt(32.W))
-    }
-}
-
 //warning: divide zero is not considered.
 class AlterDivider extends MultiIOModule {
 

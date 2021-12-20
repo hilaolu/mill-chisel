@@ -16,3 +16,13 @@ class Protocol extends Bundle {
         val busy = Output(Bool())
     }
 }
+
+class DividerProtocol extends Protocol {
+
+    override val out = new Bundle {
+        val result = Output(UInt(32.W))
+        val end = Output(Bool())
+        val busy = Output(Bool())
+        val rest = Output(UInt(32.W))
+    }
+}
