@@ -49,8 +49,8 @@ class CalculatorTest extends FlatSpec with ChiselScalatestTester with Matchers {
             c.io.in.start.poke(false.B)
 
             for (i <- 0 until 40) {
-                println(c.io.out.result.peek())
-                println(c.io.out.op_2.peek())
+                //println(c.io.out.result.peek())
+                //println(c.io.out.op_2.peek())
                 c.clock.step()
             }
 
