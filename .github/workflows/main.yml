@@ -39,7 +39,7 @@ jobs:
         run: mill __.__.test
 
       - name: give me verilog!!!!
-        run: mill FSM.run
+        run: mill __.run
 
       - name: upload verilog 
         uses: actions/upload-artifact@v2
