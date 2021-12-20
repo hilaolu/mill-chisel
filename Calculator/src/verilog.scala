@@ -12,5 +12,7 @@ import chisel3.util._
 object GiveMeVerilog extends App {
     import chisel3.stage._
     val c = new ChiselStage
-    println(c.emitVerilog(new Multiplier, Array("--target-dir", "build/")))
+    // println(c.emitVerilog(new Multiplier, Array("--target-dir", "build/")))
+    // println(c.emitVerilog(new DisplayDriver, Array("--target-dir", "build/")))
+    println(c.emitVerilog(new Calculator, Array("--target-dir", "build/")))
 }
