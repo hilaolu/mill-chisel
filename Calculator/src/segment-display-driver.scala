@@ -43,7 +43,7 @@ class DisplayDriver extends MultiIOModule {
 
     val index = counter(18, 16)
 
-    io.out.cx := MuxLookup(io.in.hex_vec(index), 0.U, lut)
+    io.out.cx := ~MuxLookup(io.in.hex_vec(index), 0.U, lut)
 
     io.out.index := ~(1.U << index)
 
