@@ -16,8 +16,8 @@ class Calculator extends MultiIOModule {
         val out = new Bundle {
             val en = Output(UInt(8.W))
             val cx = Output(UInt(8.W))
-            val result = Output(UInt(32.W))
-            val op_2=Output(UInt(32.W))
+            //val result = Output(UInt(32.W))
+            //val op_2=Output(UInt(32.W))
         }
     })
 
@@ -29,7 +29,7 @@ class Calculator extends MultiIOModule {
     val opcode = io.in.opcode
 
     val result = RegInit(UInt(32.W), 0.U)
-    io.out.result := result
+    //io.out.result := result
 
     val subtracter = Module(new Subtracter)
     val adder = Module(new Adder)
@@ -97,7 +97,7 @@ class Calculator extends MultiIOModule {
         state := Mux(end && ~io.in.start, idle, busy)
     }
 
-    io.out.op_2:=new_result
+    //io.out.op_2:=new_result
     //drive display
     for (i <- 0 until 8) {
         driver.io.in.hex_vec(i) <> result(i * 4 + 3, i * 4)
