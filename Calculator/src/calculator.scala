@@ -16,24 +16,32 @@ class Calculator extends MultiIOModule {
         val out = new Bundle {
             val en = Output(UInt(8.W))
             val cx = Output(UInt(8.W))
+            val result = Output(UInt(32.W))
+            val op_2=Output(UInt(32.W))
         }
     })
 
-    val started = RegInit(Bool())
+    val busy :: idle :: Nil = Enum(2)
+    val state = RegInit(UInt(1.W), idle)
+
+    val started = RegInit(Bool(), false.B)
+
     val opcode = io.in.opcode
 
     val result = RegInit(UInt(32.W), 0.U)
+    io.out.result := result
 
-    val subtracter = new Subtracter
-    val adder = new Adder
-    val multiplier = new Booth2
-    val divider = new Divider2
+    val subtracter = Module(new Subtracter)
+    val adder = Module(new Adder)
+    val multiplier = Module(new Booth2)
+    val divider = Module(new Divider2)
 
     val op_1 = Wire(UInt(32.W))
     val op_2 = Wire(UInt(32.W))
 
-    op_2 := Mux(io.in.opcode === "b101".U, result, io.in.op_2)
-    op_1 := Mux(started, result, io.in.op_1)
+
+    op_2 := Mux(opcode === "b101".U, result, io.in.op_2)
+    op_1 := Mux(opcode === "b101".U || started, result, io.in.op_1)
 
     subtracter.io.in.op_1 := op_1
     subtracter.io.in.op_2 := op_2
@@ -47,12 +55,15 @@ class Calculator extends MultiIOModule {
     adder.io.in.op_1 := op_1
     adder.io.in.op_2 := op_2
 
-    multiplier.io.in.start := Mux(opcode === "b010".U, io.in.start, false.B)
-    multiplier.io.in.start := Mux(
+    multiplier.io.in.start := Mux(opcode === "b010".U||opcode==="b101".U, io.in.start&&state===idle, false.B)
+    divider.io.in.start := Mux(
       opcode === "b100".U || opcode === "b011".U,
-      io.in.start,
+      io.in.start&&state===idle,
       false.B
     )
+
+    adder.io.in.start := DontCare
+    subtracter.io.in.start := DontCare
 
     val lut = Array(
       "b000".U -> adder.io.out.result,
@@ -76,16 +87,23 @@ class Calculator extends MultiIOModule {
 
     val end = MuxLookup(opcode, false.B, end_lut)
 
-    result := Mux(end, new_result, result)
+    result := Mux(end && state === busy, new_result, result)
 
     val driver = Module(new DisplayDriver)
 
+    when(state === idle) {
+        state := Mux(io.in.start, busy, idle)
+    }.otherwise {
+        state := Mux(end && ~io.in.start, idle, busy)
+    }
+
+    io.out.op_2:=new_result
     //drive display
     for (i <- 0 until 8) {
         driver.io.in.hex_vec(i) <> result(i * 4 + 3, i * 4)
     }
 
-    started := Mux(io.in.start, true.B, started)
+    started := Mux(state ===busy, true.B, started)
 
     io.out.cx <> driver.io.out.cx
     io.out.en <> driver.io.out.index
