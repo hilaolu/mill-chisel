@@ -19,9 +19,6 @@ class Calculator extends MultiIOModule {
         }
     })
 
-    val busy :: idle :: Nil = Enum(2)
-    val state = Reg(UInt(1.W))
-
     val started = RegInit(Bool())
     val opcode = io.in.opcode
 
@@ -66,9 +63,20 @@ class Calculator extends MultiIOModule {
       "b101".U -> multiplier.io.out.result
     )
 
+    val end_lut = Array(
+      "b000".U -> adder.io.out.end,
+      "b001".U -> subtracter.io.out.end,
+      "b010".U -> multiplier.io.out.end,
+      "b011".U -> divider.io.out.end,
+      "b100".U -> divider.io.out.end,
+      "b101".U -> multiplier.io.out.end
+    )
+
     val new_result = MuxLookup(opcode, 0.U, lut)
 
-    result := Mux(state === idle, new_result, result)
+    val end = MuxLookup(opcode, false.B, end_lut)
+
+    result := Mux(end, new_result, result)
 
     val driver = Module(new DisplayDriver)
 
