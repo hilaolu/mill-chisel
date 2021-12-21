@@ -88,7 +88,7 @@ class Calculator extends MultiIOModule {
 
     val end = MuxLookup(opcode, false.B, end_lut)
 
-    result := Mux(end && ~io.in.start === busy, new_result, result)
+    result := Mux(state===idle && ~io.in.start, new_result, result)
 
     val driver = Module(new DisplayDriver)
 
