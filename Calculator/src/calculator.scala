@@ -83,7 +83,8 @@ class Calculator extends MultiIOModule {
       "b100".U -> divider.io.out.end,
       "b101".U -> multiplier.io.out.end
     )
-
+    
+    val next_state=Wire(UInt(1.W))
     val new_result = MuxLookup(opcode, 0.U, lut)
 
     val end = MuxLookup(opcode, false.B, end_lut)
@@ -91,7 +92,7 @@ class Calculator extends MultiIOModule {
     result := Mux(state===busy && next_state===idle, new_result, result)
 
     val driver = Module(new DisplayDriver)
-    val next_state=Wire(UInt(1.W))
+    
 
     when(state === idle) {
         next_state := Mux(io.in.start, busy, idle)
