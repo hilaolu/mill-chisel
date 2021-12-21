@@ -22,7 +22,7 @@ class Calculator extends MultiIOModule {
     val start_p=Wire(Bool())
     val last_start=Reg(Bool())
     last_start:=io.in.start
-    start_p:=~io.in.start && last_start
+    start_p:= ~io.in.start && last_start
 
     val busy :: idle :: Nil = Enum(2)
     val state = RegInit(UInt(1.W), idle)
