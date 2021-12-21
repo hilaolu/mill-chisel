@@ -18,6 +18,11 @@ class Calculator extends MultiIOModule {
             val cx = Output(UInt(8.W))
         }
     })
+    
+    val start_p=Wire(Bool())
+    val last_start=Reg(Bool())
+    last_start:=io.in.start
+    start_p:=~io.in.start && last_start
 
     val busy :: idle :: Nil = Enum(2)
     val state = RegInit(UInt(1.W), idle)
@@ -54,12 +59,12 @@ class Calculator extends MultiIOModule {
 
     multiplier.io.in.start := Mux(
       opcode === "b010".U || opcode === "b101".U,
-      io.in.start && state === idle,
+      start_p && state === idle,
       false.B
     )
     divider.io.in.start := Mux(
       opcode === "b100".U || opcode === "b011".U,
-      io.in.start && state === idle,
+      start_p && state === idle,
       false.B
     )
 
@@ -95,9 +100,9 @@ class Calculator extends MultiIOModule {
     
 
     when(state === idle) {
-        next_state := Mux(io.in.start, busy, idle)
+        next_state := Mux(start_p, busy, idle)
     }.otherwise {
-        next_state := Mux(end && ~io.in.start, idle, busy)
+        next_state := Mux(end, idle, busy)
     }
     state:=next_state
     driver.io.in.hex_vec := result.asTypeOf(Vec(8, UInt(4.W)))
