@@ -88,16 +88,17 @@ class Calculator extends MultiIOModule {
 
     val end = MuxLookup(opcode, false.B, end_lut)
 
-    result := Mux(state===idle && ~io.in.start, new_result, result)
+    result := Mux(state===busy && next_state===idle, new_result, result)
 
     val driver = Module(new DisplayDriver)
+    val next_state=Wire(UInt(1.W))
 
     when(state === idle) {
-        state := Mux(io.in.start, busy, idle)
+        next_state := Mux(io.in.start, busy, idle)
     }.otherwise {
-        state := Mux(end && ~io.in.start, idle, busy)
+        next_state := Mux(end && ~io.in.start, idle, busy)
     }
-
+    state:=next_state
     driver.io.in.hex_vec := result.asTypeOf(Vec(8, UInt(4.W)))
 
     started := Mux(state === busy, true.B, started)
