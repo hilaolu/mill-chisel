@@ -34,7 +34,7 @@ class Booth2 extends MultiIOModule {
         multiplicand := io.in.op_1
         multiplier := Cat(io.in.op_2, 0.U(1.W))
         result := 0.U
-    }.elsewhen(multiplier =/= 0.U && busy) {
+    }.elsewhen(busy) {
         //todo
         multiplicand := multiplicand << 2.U
         multiplier := multiplier >> 2.U
@@ -43,7 +43,7 @@ class Booth2 extends MultiIOModule {
     }.otherwise {
         multiplicand := DontCare
         multiplier := DontCare
-        result := DontCare
+        result := result
         //don't flip to save power
     }
 

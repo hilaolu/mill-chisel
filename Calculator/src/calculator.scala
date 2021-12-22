@@ -18,11 +18,11 @@ class Calculator extends MultiIOModule {
             val cx = Output(UInt(8.W))
         }
     })
-    
-    val start_p=Wire(Bool())
-    val last_start=Reg(Bool())
-    last_start:=io.in.start
-    start_p:= ~io.in.start && last_start
+
+    val start_p = Wire(Bool())
+    val last_start = Reg(Bool())
+    last_start := io.in.start
+    start_p := ~io.in.start && last_start
 
     val busy :: idle :: Nil = Enum(2)
     val state = RegInit(UInt(1.W), idle)
@@ -88,23 +88,25 @@ class Calculator extends MultiIOModule {
       "b100".U -> divider.io.out.end,
       "b101".U -> multiplier.io.out.end
     )
-    
-    val next_state=Wire(UInt(1.W))
+
+    val next_state = Wire(UInt(1.W))
+    val last_state = Reg(UInt(1.W))
     val new_result = MuxLookup(opcode, 0.U, lut)
 
     val end = MuxLookup(opcode, false.B, end_lut)
 
-    result := Mux(state===busy && next_state===idle, new_result, result)
+    result := Mux(state === idle && last_state === busy, new_result, result)
+
+    last_state := state
 
     val driver = Module(new DisplayDriver)
-    
 
     when(state === idle) {
         next_state := Mux(start_p, busy, idle)
     }.otherwise {
         next_state := Mux(end, idle, busy)
     }
-    state:=next_state
+    state := next_state
     driver.io.in.hex_vec := result.asTypeOf(Vec(8, UInt(4.W)))
 
     started := Mux(state === busy, true.B, started)
